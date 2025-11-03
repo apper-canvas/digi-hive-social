@@ -28,7 +28,7 @@ class CommunitiesService {
     });
   }
 
-  async getByName(name) {
+async getByName(name) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         const community = this.communities.find(c => 
@@ -40,6 +40,23 @@ class CommunitiesService {
           reject(new Error("Community not found"));
         }
       }, Math.random() * 200 + 100);
+    });
+  }
+
+  async toggleSubscription(id) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const communityIndex = this.communities.findIndex(c => c.id === id);
+        if (communityIndex !== -1) {
+          this.communities[communityIndex].isSubscribed = !this.communities[communityIndex].isSubscribed;
+          if (this.communities[communityIndex].isSubscribed) {
+            this.communities[communityIndex].memberCount += 1;
+          } else {
+            this.communities[communityIndex].memberCount -= 1;
+          }
+          resolve({ ...this.communities[communityIndex] });
+        }
+      }, Math.random() * 300 + 100);
     });
   }
 

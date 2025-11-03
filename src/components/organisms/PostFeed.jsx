@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 
 const PostFeed = ({ 
   communityName = null,
+  postType = "all",
+  onPostTypeChange,
   className
 }) => {
   const [posts, setPosts] = useState([]);
@@ -18,8 +20,7 @@ const PostFeed = ({
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
-
-  const loadPosts = useCallback(async (filterType = "hot", pageNum = 1, append = false) => {
+const loadPosts = useCallback(async (filterType = "hot", pageNum = 1, append = false) => {
     try {
       if (!append) {
         setLoading(true);
@@ -31,6 +32,7 @@ const PostFeed = ({
       const response = await postsService.getAll({
         filter: filterType,
         community: communityName,
+        postType: postType !== "all" ? postType : undefined,
         page: pageNum,
         limit: 10
       });
@@ -51,9 +53,9 @@ const PostFeed = ({
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [communityName]);
+  }, [communityName, postType]);
 
-  useEffect(() => {
+useEffect(() => {
     loadPosts(activeFilter, 1, false);
   }, [loadPosts, activeFilter]);
 
@@ -151,24 +153,27 @@ const PostFeed = ({
     );
   }
 
-  return (
+return (
     <div className={className}>
       {/* Filter Tabs */}
       <div className="mb-6">
         <FilterTabs
           activeFilter={activeFilter}
           onFilterChange={handleFilterChange}
+          activePostType={postType}
+          onPostTypeChange={onPostTypeChange}
         />
       </div>
 
       {/* Posts */}
-      <div className="space-y-4">
+<div className="space-y-4">
         {posts.map((post) => (
           <PostCard
             key={post.id}
             post={post}
             onVote={handleVote}
             showCommunity={!communityName}
+            isPinned={post.isPinned}
           />
         ))}
       </div>

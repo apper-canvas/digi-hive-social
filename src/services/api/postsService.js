@@ -8,13 +8,31 @@ class PostsService {
   async getAll(options = {}) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        let filteredPosts = [...this.posts];
+let filteredPosts = [...this.posts];
 
         // Filter by community
         if (options.community) {
           filteredPosts = filteredPosts.filter(
             post => post.communityName.toLowerCase() === options.community.toLowerCase()
           );
+        }
+
+        // Filter by post type
+        if (options.postType) {
+          filteredPosts = filteredPosts.filter(post => {
+            switch (options.postType) {
+              case "image":
+                return post.type === "image" || post.imageUrl;
+              case "video":
+                return post.type === "video";
+              case "link":
+                return post.type === "link" || post.linkUrl;
+              case "text":
+                return post.type === "text" && !post.imageUrl && !post.linkUrl;
+              default:
+                return true;
+            }
+          });
         }
 
         // Sort by filter type
@@ -33,6 +51,14 @@ class PostsService {
               return bScore - aScore;
             });
             break;
+          case "controversial":
+            // Sort by posts with similar upvotes and downvotes (controversial)
+            filteredPosts.sort((a, b) => {
+              const aRatio = Math.min(a.upvotes, a.downvotes) / Math.max(a.upvotes, a.downvotes, 1);
+              const bRatio = Math.min(b.upvotes, b.downvotes) / Math.max(b.upvotes, b.downvotes, 1);
+              return bRatio - aRatio;
+            });
+            break;
           default: // "hot"
             // Simple hot algorithm combining score and recency
             filteredPosts.sort((a, b) => {
@@ -41,6 +67,13 @@ class PostsService {
               return bHot - aHot;
             });
         }
+
+        // Separate pinned posts and regular posts
+        const pinnedPosts = filteredPosts.filter(post => post.isPinned);
+        const regularPosts = filteredPosts.filter(post => !post.isPinned);
+        
+        // Combine with pinned posts first
+        filteredPosts = [...pinnedPosts, ...regularPosts];
 
         // Pagination
         const page = options.page || 1;
