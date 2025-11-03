@@ -159,9 +159,9 @@ const handleRetry = () => {
                   Subscribe
                 </>
               )}
-            </Button>
+</Button>
 
-<Button 
+            <Button 
               variant="outline" 
               size="md"
               onClick={handleShare}
@@ -169,6 +169,7 @@ const handleRetry = () => {
               <ApperIcon name="Share" className="w-4 h-4 mr-2" />
               Share
             </Button>
+          </div>
         </div>
       </div>
 
