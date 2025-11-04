@@ -1,27 +1,28 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import VoteButtons from "@/components/molecules/VoteButtons";
-import CommentSection from "@/components/organisms/CommentSection";
-import Badge from "@/components/atoms/Badge";
-import Button from "@/components/atoms/Button";
-import ApperIcon from "@/components/ApperIcon";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { postsService } from "@/services/api/postsService";
 import { commentsService } from "@/services/api/commentsService";
-import { formatTimeAgo, formatNumber } from "@/utils/formatters";
 import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
+import CommentSection from "@/components/organisms/CommentSection";
+import Loading from "@/components/ui/Loading";
+import Error from "@/components/ui/Error";
+import VoteButtons from "@/components/molecules/VoteButtons";
+import { formatNumber, formatTimeAgo } from "@/utils/formatters";
 
 const PostDetail = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
   
-  const [post, setPost] = useState(null);
+const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [commentsLoading, setCommentsLoading] = useState(true);
   const [error, setError] = useState("");
   const [commentsError, setCommentsError] = useState("");
+  const [commentSortBy, setCommentSortBy] = useState("best");
 
   useEffect(() => {
     loadPost();
@@ -346,13 +347,16 @@ const PostDetail = () => {
       </article>
 
       {/* Comments Section */}
-      <CommentSection
+<CommentSection
         comments={comments}
         loading={commentsLoading}
         error={commentsError}
         onAddComment={handleAddComment}
         onVote={handleCommentVote}
         onRetry={loadComments}
+        sortBy={commentSortBy}
+        onSortChange={setCommentSortBy}
+        postAuthor={post?.authorUsername}
       />
     </div>
   );

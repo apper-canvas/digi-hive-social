@@ -197,7 +197,22 @@ let filteredPosts = [...this.posts];
 
         this.posts.splice(postIndex, 1);
         resolve({ success: true });
-      }, Math.random() * 300 + 200);
+}, Math.random() * 300 + 200);
+    });
+  }
+
+  async updateCommentCount(postId, increment = 1) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const postIndex = this.posts.findIndex(p => p.id === postId);
+        if (postIndex === -1) {
+          reject(new Error("Post not found"));
+          return;
+        }
+
+        this.posts[postIndex].commentCount += increment;
+        resolve({ success: true });
+      }, Math.random() * 100 + 50);
     });
   }
 }

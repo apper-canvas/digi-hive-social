@@ -1,11 +1,11 @@
-import { useState } from "react";
-import CommentCard from "@/components/molecules/CommentCard";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 import Button from "@/components/atoms/Button";
 import Textarea from "@/components/atoms/Textarea";
 import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import { toast } from "react-toastify";
+import Error from "@/components/ui/Error";
+import CommentCard from "@/components/molecules/CommentCard";
 
 const CommentSection = ({
   comments = [],
@@ -14,7 +14,8 @@ const CommentSection = ({
   onAddComment,
   onVote,
   onRetry,
-  className
+  className,
+  postAuthor
 }) => {
   const [newComment, setNewComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -106,13 +107,14 @@ const CommentSection = ({
             </h3>
           </div>
 
-          {comments.map((comment) => (
+{comments.map((comment) => (
             <CommentCard
               key={comment.id}
               comment={comment}
               onVote={onVote}
               onReply={handleReply}
               depth={0}
+              postAuthor={postAuthor}
             />
           ))}
         </div>

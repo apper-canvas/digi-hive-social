@@ -42,9 +42,9 @@ const CommentCard = ({
       <div 
         className={cn(
           "border-l-2 border-gray-200 pl-3",
-          depth > 0 && "ml-4"
+depth > 0 ? "border-gray-300 bg-gray-50/50" : "border-gray-200"
         )}
-        style={{ marginLeft: depth > 0 ? `${Math.min(depth * 24, maxDepth * 24)}px` : undefined }}
+        style={{ marginLeft: depth > 0 ? `${Math.min(depth * 20, maxDepth * 20)}px` : undefined }}
       >
         {/* Comment Header */}
         <div className="flex items-center justify-between">

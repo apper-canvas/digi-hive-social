@@ -5,14 +5,39 @@ class CommentsService {
     this.comments = [...commentsData];
   }
 
-  async getByPostId(postId) {
+async getByPostId(postId, sortBy = "best") {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const postComments = this.comments
-          .filter(comment => comment.postId === postId && !comment.parentId)
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        let postComments = this.comments
+          .filter(comment => comment.postId === postId && !comment.parentId);
         
-        // Build nested structure
+        // Sort top level comments based on sortBy parameter
+        switch (sortBy) {
+          case "new":
+            postComments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            break;
+          case "old":
+            postComments.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+            break;
+          case "top":
+            postComments.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
+            break;
+          case "controversial":
+            postComments.sort((a, b) => {
+              const aRatio = Math.min(a.upvotes, a.downvotes) / Math.max(a.upvotes, a.downvotes, 1);
+              const bRatio = Math.min(b.upvotes, b.downvotes) / Math.max(b.upvotes, b.downvotes, 1);
+              return bRatio - aRatio;
+            });
+            break;
+          default: // "best"
+            postComments.sort((a, b) => {
+              const aScore = (a.upvotes - a.downvotes) + (a.upvotes + a.downvotes) * 0.1;
+              const bScore = (b.upvotes - b.downvotes) + (b.upvotes + b.downvotes) * 0.1;
+              return bScore - aScore;
+            });
+        }
+        
+        // Build nested structure - replies always sorted by time (oldest first)
         const buildReplies = (parentId) => {
           return this.comments
             .filter(comment => comment.parentId === parentId)
