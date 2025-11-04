@@ -584,61 +584,60 @@ return (
                     <span className="text-sm text-gray-700">Hide content behind spoiler warning</span>
                   </div>
                 </label>
+</div>
+            </div>
+          </div>
+
+          {/* Submit Actions */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-500">
+                {postData.isNsfw && <Badge variant="destructive" size="sm" className="mr-2">NSFW</Badge>}
+                {postData.isSpoiler && <Badge variant="secondary" size="sm" className="mr-2">SPOILER</Badge>}
+                {postData.flair && (
+                  <Badge 
+                    size="sm" 
+                    className={communityFlairs[postData.communityName]?.find(f => f.name === postData.flair)?.color || "bg-gray-100 text-gray-800"}
+                  >
+                    {postData.flair}
+                  </Badge>
+                )}
+              </div>
+              
+              <div className="flex items-center space-x-4">
+                <Button
+                  type="button"
+                  onClick={handleCancel}
+                  variant="outline"
+                  disabled={submitting}
+                >
+                  Cancel
+                </Button>
+                
+                <Button
+                  type="submit"
+                  variant="primary"
+                  disabled={submitting || !postData.title.trim() || !postData.communityName}
+                  className="bg-gradient-to-r from-primary to-primary/80"
+                >
+                  {submitting ? (
+                    <>
+                      <ApperIcon name="Loader2" className="w-4 h-4 mr-2 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      <ApperIcon name="Send" className="w-4 h-4 mr-2" />
+                      Create Post
+                    </>
+                  )}
+                </Button>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Submit Actions */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-500">
-              {postData.isNsfw && <Badge variant="destructive" size="sm" className="mr-2">NSFW</Badge>}
-              {postData.isSpoiler && <Badge variant="secondary" size="sm" className="mr-2">SPOILER</Badge>}
-              {postData.flair && (
-                <Badge 
-                  size="sm" 
-                  className={communityFlairs[postData.communityName]?.find(f => f.name === postData.flair)?.color || "bg-gray-100 text-gray-800"}
-                >
-                  {postData.flair}
-                </Badge>
-              )}
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <Button
-                type="button"
-                onClick={handleCancel}
-                variant="outline"
-                disabled={submitting}
-              >
-                Cancel
-              </Button>
-              
-              <Button
-                type="submit"
-                variant="primary"
-                disabled={submitting || !postData.title.trim() || !postData.communityName}
-                className="bg-gradient-to-r from-primary to-primary/80"
-              >
-                {submitting ? (
-                  <>
-                    <ApperIcon name="Loader2" className="w-4 h-4 mr-2 animate-spin" />
-                    Creating...
-                  </>
-                ) : (
-                  <>
-                    <ApperIcon name="Send" className="w-4 h-4 mr-2" />
-                    Create Post
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-</div>
-      </form>
-    </div>
-  );
+        </form>
+      </div>
+    );
 };
 
 export default CreatePost;
